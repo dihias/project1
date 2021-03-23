@@ -107,22 +107,20 @@ def show_venue(venue_id):
   past_shows = []
   upcoming_shows = []
   for show in venue.shows:
-    if show.start_time <= datetime.now():
-        past_shows.append({
-            'artist_id': show.artist_id,
-            'artist_name': show.artists.name,
-            "artist_image_link": show.artists.image_link,
-            'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
-        })
-  
-    for show in venue.shows:
-      if show.start_time > datetime.now():
-        upcoming_shows.append({
-            'artist_id': show.artist_id,
-            'artist_name': show.artists.name,
-            "artist_image_link": show.artists.image_link,
-            'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
-        })
+      if show.start_time <= datetime.now():
+          past_shows.append({
+              'artist_id': show.artist_id,
+              'artist_name': show.artists.name,
+              "artist_image_link": show.artists.image_link,
+              'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+          })
+      else:
+          upcoming_shows.append({
+              'artist_id': show.artist_id,
+              'artist_name': show.artists.name,
+              "artist_image_link": show.artists.image_link,
+              'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+          })
 
   data={
     "id": venue.id,
@@ -235,23 +233,24 @@ def show_artist(artist_id):
   shows = artist.shows
   past_shows = []
   upcoming_shows = []
+    
   for show in artist.shows:
-    if show.start_time <= datetime.now():
-        past_shows.append({
-            'venue_id': show.venue_id,
-            'venue_name': show.venues.name,
-            "venue_image_link": show.venues.image_link,
-            'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+    if show.start_time > datetime.now():
+      upcoming_shows.append({
+          'venue_id': show.venue_id,
+          'venue_name': show.venues.name,
+          "venue_image_link": show.venues.image_link,
+          'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+        })
+    else:
+      past_shows.append({
+          'artist_id': show.artist_id,
+          'artist_name': show.artists.name,
+          "artist_image_link": show.artists.image_link,
+          'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
         })
     
-    for show in artist.shows:
-      if show.start_time > datetime.now():
-        upcoming_shows.append({
-            'venue_id': show.venue_id,
-            'venue_name': show.venues.name,
-            "venue_image_link": show.venues.image_link,
-            'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
-        })
+
   data = {
     "id": artist.id,
     "name": artist.name,
@@ -426,14 +425,14 @@ def shows():
 
   data = []
   for show in shows_list:
-    if show.start_time > datetime.now():
-      data.append({
-      "venue_id": show.venue_id,
-      "venue_name": show.venue.name,
-      "artist_id": show.artists_id,
-      "artist_name": show.artist.name,
-      "artist_image_link": show.artist.image_link,
-      "start_time": str(show.start_time)
+    
+    data.append({
+    "venue_id": show.venue_id,
+    "venue_name": show.venue.name,
+    "artist_id": show.artist_id,
+    "artist_name": show.artist.name,
+    "artist_image_link": show.artist.image_link,
+    "start_time": str(show.start_time)
       })
 
   return render_template('pages/shows.html', shows=data)
